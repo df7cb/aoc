@@ -7,6 +7,6 @@ print(lines)
 
 for left in lines:
     for middle in lines:
-        for right in lines:
-            if left + middle+ right == 2020:
-                print(left, middle, right, left*middle*right)
+        right = 2020 - left - middle
+        if right in lines:
+            print(left, middle, right, left*middle*right)
