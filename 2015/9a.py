@@ -9,6 +9,7 @@ with open('9.txt') as f:
     for line in f:
         m = re.match('(.*) to (.*) = (\d+)', line)
         nodes[m[1]] = True
+        nodes[m[2]] = True
         dist[m[1], m[2]] = int(m[3])
         dist[m[2], m[1]] = int(m[3])
 
