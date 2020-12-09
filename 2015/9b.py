@@ -13,13 +13,13 @@ with open('9.txt') as f:
         dist[m[1], m[2]] = int(m[3])
         dist[m[2], m[1]] = int(m[3])
 
-maxdist = 10000
+maxdist = 0
 
 def walk(path, d):
     #print(path, d)
     if len(path) == len(nodes):
         global maxdist
-        if d <= maxdist:
+        if d >= maxdist:
             print(path, d)
             maxdist = d
         return
