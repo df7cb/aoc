@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
 import re
-import types
 
 wire = {}
 wire_cache = {}
