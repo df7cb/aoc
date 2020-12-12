@@ -23,9 +23,11 @@ with open('12.txt') as f:
         elif c == 'W':
             wx -= i
         elif c == 'R':
-            wx, wy = wy, -wx
+            for r in range(0, int(i/90)):
+                wx, wy = wy, -wx
         elif c == 'L':
-            wx, wy = -wy, wx
+            for r in range(0, int(i/90)):
+                wx, wy = -wy, wx
 
         print (line.strip(), x, y, wx, wy)
 
