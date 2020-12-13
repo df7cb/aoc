@@ -1,3 +1,5 @@
+# Credit: Eric Langlois https://math.stackexchange.com/a/3864593
+
 def combine_phased_rotations(a_period, a_phase, b_period, b_phase):
     """Combine two phased rotations into a single phased rotation
 
