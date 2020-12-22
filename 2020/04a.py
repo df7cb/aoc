@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-with open('4.txt') as f:
+with open('04.txt') as f:
     passports = f.read().split("\n\n")
 
 #print(passports)

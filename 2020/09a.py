@@ -2,7 +2,7 @@
 
 xmas = []
 
-with open('9.txt') as f:
+with open('09.txt') as f:
     for line in f:
         xmas.append(int(line))
 

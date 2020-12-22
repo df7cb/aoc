@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-with open('1.txt') as f:
+with open('01.txt') as f:
     lines = set(map(int, f.readlines()))
 
 print(lines)

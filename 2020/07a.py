@@ -5,7 +5,7 @@ import re
 contains = {}
 contained = {}
 
-with open('7.txt') as f:
+with open('07.txt') as f:
     for rule in f:
         m = re.match('(.*) bags contain (.*)', rule)
         outer_color = m.group(1)

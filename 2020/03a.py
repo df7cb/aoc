@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-with open('3.txt') as f:
+with open('03.txt') as f:
     trees = f.readlines()
 
 print(''.join(trees))

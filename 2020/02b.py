@@ -4,20 +4,17 @@ import re
 
 answer = 0
 
-with open('2.txt') as f:
+with open('02.txt') as f:
     for line in f:
         r = re.match('(\d+)-(\d+) (.): (.*)', line)
         if not r:
             raise('huh')
-        l, h = int(r.group(1)), int(r.group(2))
+        p1, p2 = int(r.group(1)), int(r.group(2))
         c = r.group(3)
         pw = r.group(4)
 
-        matches = filter(lambda x: x == c, pw)
-        number = sum(1 for x in matches)
-
-        if l <= number <= h:
-            print (l, h, c, pw, number)
+        if (pw[p1-1] == c) + (pw[p2-1] == c) == 1:
+            print (p1, p2, c, pw)
             answer += 1
 
 print('answer is', answer)

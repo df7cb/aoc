@@ -4,7 +4,7 @@ import re
 
 mem = []
 
-with open('8.txt') as f:
+with open('08.txt') as f:
     for rule in f:
         m = re.match('(nop|acc|jmp) ([+-]\d+)', rule)
         mem.append({'cmd': m.group(1), 'val': int(m.group(2))})
