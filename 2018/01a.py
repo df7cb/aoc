@@ -2,7 +2,7 @@
 
 freq = 0
 
-with open("1.txt") as f:
+with open("01.txt") as f:
     for line in f:
         freq += int(line)
 

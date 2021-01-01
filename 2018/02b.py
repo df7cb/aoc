@@ -13,9 +13,9 @@ def cmp(l1, l2):
             print(c[0], end='')
     print()
 
-with open("2.txt") as f:
+with open("02.txt") as f:
     for l in f:
-        with open("2.txt") as f2:
+        with open("02.txt") as f2:
             for l2 in f2:
                 if l == l2: continue
                 cmp(l, l2)

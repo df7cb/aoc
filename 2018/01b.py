@@ -5,7 +5,7 @@ seen = {}
 seen[freq] = 1
 
 while True:
-    with open("1.txt") as f:
+    with open("01.txt") as f:
         for line in f:
             freq += int(line)
             if freq in seen:

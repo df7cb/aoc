@@ -3,7 +3,7 @@
 two = 0
 three = 0
 
-with open("2.txt") as f:
+with open("02.txt") as f:
     for l in f:
         count = {}
         for c in list(l):
