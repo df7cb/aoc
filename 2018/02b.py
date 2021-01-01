@@ -7,7 +7,8 @@ def cmp(l1, l2):
             if diff:
                 return
             diff = True
-    print(l1, l2)
+    print(l1)
+    print(l2)
     for c in zip(list(l1), list(l2)):
         if c[0] == c[1]:
             print(c[0], end='')
@@ -18,5 +19,5 @@ with open("02.txt") as f:
         with open("02.txt") as f2:
             for l2 in f2:
                 if l == l2: continue
-                cmp(l, l2)
+                cmp(l.strip(), l2.strip())
 
