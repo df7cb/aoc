@@ -7,7 +7,7 @@ stars = []
 
 #position=<-31761,  10798> velocity=< 3, -1>
 
-with open('09.txt') as f:
+with open('10.txt') as f:
     for line in f:
         if m := re.match('position=<([ \d-]+),([ \d-]+)> velocity=<([ \d-]+),([ \d-]+)>', line):
             stars.append([int(x) for x in m.groups()])

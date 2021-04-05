@@ -1,44 +1,29 @@
 #!/usr/bin/python3
 
 from collections import deque
+import re
 
-# 416 players; last marble is worth 71617 points
+with open('08.txt') as f:
+    numbers = deque([int(x) for x in f.read().split()])
 
-#players, last_marble = 9, 25
-#players, last_marble = 10, 1618
-#players, last_marble = 13, 7999
-#players, last_marble = 416, 71617
-players, last_marble = 416, 71617 * 100
+def process(numbers):
+    n_children = numbers.popleft()
+    n_metadata = numbers.popleft()
+    children = []
+    ret = 0
+    for i in range(n_children):
+        children.append(process(numbers))
+        print(children)
 
-def print_ring(i, player, ring, current_pos):
-    print('['+player+'] ', end='')
-    for m in range(len(ring)):
-        print("%3s" % (('(' if m == current_pos else ' ') + str(ring[m])), end='')
-        if m == current_pos:
-            print(')', end='')
-        else:
-            print('', end='')
-    print()
-    print('Round', i)
+    if n_children == 0:
+        for i in range(n_metadata):
+            ret += numbers.popleft()
+        return ret
 
-scores = [0 for x in range(players)]
-ring = deque([0])
-current_player = 0
-current_pos = 0
+    for i in range(n_metadata):
+        data = numbers.popleft()
+        if 1 <= data <= n_children:
+            ret += children[data-1]
+    return ret
 
-#print_ring(0, '-', ring, current_pos)
-
-for i in range(1, last_marble+1):
-    if i % 23 == 0:
-        ring.rotate(7)
-        scores[current_player] += i + ring.popleft()
-    else:
-        ring.rotate(-2)
-        ring.appendleft(i)
-
-    #print_ring(i, str(current_player+1), ring, current_pos)
-
-    current_player = (current_player + 1) % players
-
-print(scores)
-print(max(scores))
+print(process(numbers))
