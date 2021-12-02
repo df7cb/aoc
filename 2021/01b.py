@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-with open('1.txt') as f:
+with open('01.txt') as f:
     depths = [x for x in map(int, f.readlines())]
 
 last = None
