@@ -6,7 +6,7 @@ with open('09.txt') as f:
 s = 0
 
 for y in range(len(floor)):
-    for x in range(len(floor[0])-1):
+    for x in range(len(floor[0])):
         this = floor[y][x]
         is_low = True
         if x > 0 and floor[y][x-1] <= this:
@@ -19,7 +19,7 @@ for y in range(len(floor)):
             is_low = False
 
         if is_low:
-            print(x,y)
+            print(x, y, this)
             s += this + 1
 
 print(s)
