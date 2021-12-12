@@ -5,6 +5,7 @@ import re
 #x=560, y=1729..1742
 #y=1288, x=483..485
 
+min_y = 100
 range_x, range_y = 0, 0
 
 with open('17.txt') as f:
@@ -12,9 +13,11 @@ with open('17.txt') as f:
         if m := re.match('x=(\d+), y=(\d+)\.\.(\d+)', line):
             range_x = max(range_x, int(m.group(1)) + 2)
             range_y = max(range_y, int(m.group(3)) + 1)
+            min_y = min(min_y, int(m.group(2)))
         elif m := re.match('y=(\d+), x=(\d+)\.\.(\d+)', line):
             range_x = max(range_x, int(m.group(3)) + 2)
             range_y = max(range_y, int(m.group(1)) + 1)
+            min_y = min(min_y, int(m.group(1)))
 
 ground = [list('.' * range_x) for y in range(range_y+1)]
 
@@ -40,8 +43,11 @@ def flow(ground, y, x):
     # flow down until we reach ground
     yy = y + 1
     while ground[yy][x] == '.':
-        area += 1
-        ground[yy][x] = '|'
+        if yy >= min_y:
+            area += 1
+            ground[yy][x] = '|'
+        else:
+            ground[yy][x] = '?'
         yy += 1
         if yy == range_y:
             return area
