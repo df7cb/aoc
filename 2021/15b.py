@@ -20,27 +20,28 @@ for yy in range(5):
         cavern5.append(line2)
 
 def check(cavern, queue, dist, cost_here, x, y):
-    if (x, y) not in dist or cost_here + cavern[y][x] < dist[(x, y)]:
-        dist[(x, y)] = cost_here + cavern[y][x]
+    if dist[y][x] < 0 or cost_here + cavern[y][x] < dist[y][x]:
+        dist[y][x] = cost_here + cavern[y][x]
         queue.append((x, y))
 
-def dijkstra(cavern):
+def dijkstra(cavern, dist):
     queue = deque([(0, 0)])
-    dist = { (0, 0): 0 }
 
     while len(queue) > 0:
         x, y = queue.popleft()
         if x > 0:
-            check(cavern, queue, dist, dist[(x, y)], x-1, y)
+            check(cavern, queue, dist, dist[y][x], x-1, y)
         if x < len(cavern[0]) - 1:
-            check(cavern, queue, dist, dist[(x, y)], x+1, y)
+            check(cavern, queue, dist, dist[y][x], x+1, y)
         if y > 0:
-            check(cavern, queue, dist, dist[(x, y)], x, y-1)
+            check(cavern, queue, dist, dist[y][x], x, y-1)
         if y < len(cavern) - 1:
-            check(cavern, queue, dist, dist[(x, y)], x, y+1)
+            check(cavern, queue, dist, dist[y][x], x, y+1)
 
     return dist
 
-dist = dijkstra(cavern5)
+dist = [[-1 for x in line] for line in cavern5]
+dist[0][0] = 0
+dist = dijkstra(cavern5, dist)
 
-print(dist[(len(cavern5)-1, len(cavern5[0])-1)])
+print(dist[len(cavern5)-1][len(cavern5[0])-1])
