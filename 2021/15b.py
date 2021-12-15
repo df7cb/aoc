@@ -23,14 +23,14 @@ def check(cavern, queue, dist, cost_here, x, y):
     cost_new = cost_here + cavern[y][x]
     if dist[y][x] < 0 or cost_new < dist[y][x]:
         dist[y][x] = cost_new
-        heapq.heappush(queue, (x, y))
+        heapq.heappush(queue, (cost_new, (x, y)))
 
 def dijkstra(cavern, dist):
-    queue = [(0, 0)]
+    queue = [(0, (0, 0))]
     heapq.heapify(queue)
 
     while len(queue) > 0:
-        x, y = heapq.heappop(queue)
+        cost, (x, y) = heapq.heappop(queue)
         if x > 0:
             check(cavern, queue, dist, dist[y][x], x-1, y)
         if x < len(cavern[0]) - 1:
