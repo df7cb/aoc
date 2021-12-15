@@ -20,8 +20,9 @@ for yy in range(5):
         cavern5.append(line2)
 
 def check(cavern, queue, dist, cost_here, x, y):
-    if dist[y][x] < 0 or cost_here + cavern[y][x] < dist[y][x]:
-        dist[y][x] = cost_here + cavern[y][x]
+    cost_new = cost_here + cavern[y][x]
+    if dist[y][x] < 0 or cost_new < dist[y][x]:
+        dist[y][x] = cost_new
         queue.append((x, y))
 
 def dijkstra(cavern, dist):
