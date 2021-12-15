@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from collections import deque, defaultdict
+import heapq
 
 with open('15.txt') as f:
     cavern = [[int(x) for x in line.strip()] for line in f]
@@ -23,13 +23,14 @@ def check(cavern, queue, dist, cost_here, x, y):
     cost_new = cost_here + cavern[y][x]
     if dist[y][x] < 0 or cost_new < dist[y][x]:
         dist[y][x] = cost_new
-        queue.append((x, y))
+        heapq.heappush(queue, (x, y))
 
 def dijkstra(cavern, dist):
-    queue = deque([(0, 0)])
+    queue = [(0, 0)]
+    heapq.heapify(queue)
 
     while len(queue) > 0:
-        x, y = queue.popleft()
+        x, y = heapq.heappop(queue)
         if x > 0:
             check(cavern, queue, dist, dist[y][x], x-1, y)
         if x < len(cavern[0]) - 1:
