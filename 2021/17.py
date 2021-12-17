@@ -29,7 +29,7 @@ def run(dx, dy):
 
 working = 0
 max_max_y = 0
-for dy in range(y1, abs(x2*y1)): # FIXME: reasonable upper bound
+for dy in range(y1, abs(y1)+1): # min y so we don't overshoot on the first step, max y since on descent, we will hit y=0 and y=-dy
     #print(dy)
     for dx in range(x2+1): # can't shoot harder than that or we overshoot in the first step
         hit, max_y = run(dx, dy)
