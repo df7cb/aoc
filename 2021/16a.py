@@ -7,15 +7,15 @@ with open('16.txt') as f:
         bits = '000'[:(4 - len(bits)%4)] + bits
 
 print(bits)
+print(len(bits))
 
 def parse(bits):
     if len(bits) < 6:
         if len(bits):
             print("trailing", bits)
-        return 0
+        return 0, 0
 
     version = int(bits[0:3], 2)
-    version_sum = version
     type_id = int(bits[3:6], 2)
     #print("version", version, "type_id", type_id)
     if type_id == 4:
@@ -24,12 +24,10 @@ def parse(bits):
         while True:
             #print("found", bits[ptr+1:ptr+5])
             number = 16*number + int(bits[ptr+1:ptr+5], 2)
+            if bits[ptr] == '0':
+                print("version", version, "type_id", type_id, "number", number)
+                return version, ptr+5
             ptr += 5
-            if bits[ptr-5] == '0':
-                break
-        print("version", version, "type_id", type_id, "number", number)
-
-        version_sum += parse(bits[ptr:])
 
     else: # other type_id
         length_type = bits[6]
@@ -38,16 +36,26 @@ def parse(bits):
             length = int(bits[7:22], 2)
             print("version", version, "type_id", type_id, "length_type", length_type, "length", length)
 
-            version_sum += parse(bits[22:22+length])
-            version_sum += parse(bits[22+length:])
+            version_sum = version
+            ptr = 22
+            while ptr < 22 + length:
+                v, p = parse(bits[ptr:])
+                version_sum += v
+                ptr += p
+            return version_sum, ptr
+
         else:
             #print("length", bits[7:18])
             subpackets = int(bits[7:18], 2)
             print("version", version, "type_id", type_id, "length_type", length_type, "subpackets", subpackets)
 
-            version_sum += parse(bits[18:])
-
-    return version_sum
+            version_sum = version
+            ptr = 18
+            for i in range(subpackets):
+                v, p = parse(bits[ptr:])
+                version_sum += v
+                ptr += p
+            return version_sum, ptr
 
 version_sum = parse(bits)
 print("version_sum", version_sum)
