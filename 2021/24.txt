@@ -2,20 +2,20 @@ inp w      input w, z
 mul x 0            x = 0
 add x z            x = z
 mod x 26           x = z%26
-div z 1    c=1|26                                                    z //= c
-add x 10   a=10    x = z%26+a
-eql x w            x = z%26+a == w
-eql x 0            x = (z%26+a != w)
+div z 1    c=1|26                                                    z = z//c
+add x 10   a=10    x = z%26+a        a=-12..15
+eql x w            x = z%26+a == w   x=0|1
+eql x 0            x = (z%26+a != w) x=0|1
 mul y 0                               y = 0
 add y 25                              y = 25
-mul y x                               y = 25*x = 25 * (z%26+a != w)
-add y 1                               y = 25 * (z%26+a != w) + 1
+mul y x                               y = 25*x = 25*(z%26+a != w)
+add y 1                               y = 25*(z%26+a != w) + 1   y=1|26
 mul z y                                                              z = (z//c) * (25 * (z % 26 + a != w) + 1)
 mul y 0                               y = 0
 add y w                               y = w
-add y 15    b = 15                    y = w+b
+add y 15    b = 15 1..15              y = w+b
 mul y x                               y = (w+b) * (z%26+a != w)
-add z y                                                              z = (z//c) * (25 * (z % 26 + a != w) + 1) * (w + b) * (z % 26 + a != w)
+add z y                                                           z = (z//c) * (25 * (z%26+a!=w) + 1) + (w+b) * (z%26+a!=w)
 
 inp w
 mul x 0

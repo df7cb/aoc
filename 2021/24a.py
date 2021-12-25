@@ -14,8 +14,6 @@ with open('24.txt') as f:
         else:
             program[-1].append(fields)
 
-print(program)
-
 reg = { 'w': 0, 'x': 0, 'y': 0, 'z': 0 }
 
 monad = [1 for x in range(14)]
@@ -53,13 +51,36 @@ def prg_sub(program, reg):
         #print("         ", reg)
     return reg
 
-def run_dummy(reg, w, c, a, b):
+def run_dummy(reg, c, a, b):
     z = reg['z']
-    reg['w'] = w
+    w = reg['w']
     reg['x'] = int(reg['z']%26+a != w)
     reg['y'] = (w+b) * (((z%26)+a) != w)
-    reg['z'] = (reg['z']//c) * (25 * (reg['z'] % 26 + a != w) + 1) * (w + b) * (reg['z'] % 26 + a != w)
+    reg['z'] = (z//c) * (25 * (z%26+a!=w) + 1) + (w+b) * (z%26+a!=w)
     return reg
 
-print("Real run: ", prg_sub(program[-1], { 'w': 0, 'x': 0, 'y': 0, 'z': 0 }))
-print("Dummy run:", run_dummy({ 'w': 0, 'x': 0, 'y': 0, 'z': 0 }, 0, 1, 10, 15))
+def chew(monad):
+    reg = { 'w': 0, 'x': 0, 'y': 0, 'z': 0 }
+    for x in range(len(monad)):
+        reg['w'] = monad[x]
+        reg = prg_sub(program[x], reg)
+    #if reg['z'] > 10000: return
+    print(x, monad[x], reg)
+
+#for i in range(10000):
+#    ii = [int(x) for x in f"{i:04}"]
+#    if 0 in ii: continue
+#    print("Trying", ii)
+#    chew(ii)
+
+chew([int(x) for x in '13579246899999'])
+
+#for w in range(10):
+#    print("Real run: ", prg_sub(program[0], { 'w': w, 'x': 0, 'y': 0, 'z': 0 }))
+#    print("Dummy run:", run_dummy({ 'w': w, 'x': 0, 'y': 0, 'z': 0 }, 1, 10, 15))
+
+#print()
+#
+#for w in range(10):
+#    print("Real run: ", prg_sub(program[-1], { 'w': w, 'x': 0, 'y': 0, 'z': 0 }))
+#    print("Dummy run:", run_dummy({ 'w': w, 'x': 0, 'y': 0, 'z': 0 }, 26, -11, 2))
