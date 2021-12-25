@@ -3,39 +3,37 @@
 ###########1#
 #01.3.5.7.90#
 ###D#C#A#B###
+  #D#C#B#A#
+  #D#B#A#C#
   #C#D#A#B#
   #########
 
-chambers = [['C', 'D'], ['D', 'C'], ['A', 'A'], ['B', 'B']]
+chambers = [['C', 'D', 'D', 'D'], ['D', 'B', 'C', 'C'], ['A', 'A', 'B', 'A'], ['B', 'C', 'A', 'B']]
 
-##############
-##...........#
-####B#C#B#D###
-#  #A#D#C#A#
-#  #########
-#
-#chambers = [['A', 'B'], ['D', 'C'], ['C', 'B'], ['A', 'D']]
+#############
+#...........#
+###B#C#B#D##
+  #D#C#B#A#
+  #D#B#A#C#
+  #A#D#C#A#
+  #########
 
-want_chambers = [['A', 'A'], ['B', 'B'], ['C', 'C'], ['D', 'D']]
+#chambers = [['A', 'D', 'D', 'B'], ['D', 'B', 'C', 'C'], ['C', 'A', 'B', 'B'], ['A', 'C', 'A', 'D']]
+
+want_chambers = [['A', 'A', 'A', 'A'], ['B', 'B', 'B', 'B'], ['C', 'C', 'C', 'C'], ['D', 'D', 'D', 'D']]
 hallway = ['.' for x in range(11)]
 hallway_places = [0, 1, 3, 5, 7, 9, 10]
 
 def dump(hallway, chambers, cost, best_cost):
-    print("#"+''.join(hallway)+"#")
-    print("###", end='')
-    for ch in range(len(chambers)):
-        if len(chambers[ch]) == 2:
-            print(chambers[ch][1], end='#')
-        else:
-            print(".", end='#')
-    print("##", cost, best_cost)
-    print("  #", end='')
-    for ch in range(len(chambers)):
-        if len(chambers[ch]) >= 1:
-            print(chambers[ch][0], end='#')
-        else:
-            print(".", end='#')
-    print("")
+    print("#"+''.join(hallway)+"#", cost, best_cost)
+    for l in (3, 2, 1, 0):
+        print("  #", end='')
+        for ch in range(len(chambers)):
+            if len(chambers[ch]) >= l+1:
+                print(chambers[ch][l], end='#')
+            else:
+                print(".", end='#')
+        print("")
 
 dump(hallway, chambers, 0, 0)
 
@@ -114,7 +112,7 @@ def walk(hallway, chambers, cost, level):
                     break # don't move out of target chamber unless blocking something
                 new_hallway[ha] = amphipod
                 new_cost = hallway_cost(ha, ch)
-                new_cost += 1 - len(new_chambers[ch])
+                new_cost += 3 - len(new_chambers[ch])
                 new_cost *= amphipod_cost(amphipod)
                 #print("    "*level + "Moving", amphipod, "to", ha, "with cost", new_cost)
                 walk(new_hallway, new_chambers, cost + new_cost, level+1)
@@ -133,7 +131,7 @@ def walk(hallway, chambers, cost, level):
                new_hallway[ha] = '.'
                new_chambers[amphipod_n].append(amphipod)
                new_cost = hallway_cost(ha, amphipod_n)
-               new_cost += 2 - len(new_chambers[amphipod_n])
+               new_cost += 4 - len(new_chambers[amphipod_n])
                new_cost *= amphipod_cost(amphipod)
                #print("    "*level + "Amphipod", amphipod, "can move to chamber", amphipod_n, "at cost", new_cost)
                walk(new_hallway, new_chambers, cost + new_cost, level+1)
