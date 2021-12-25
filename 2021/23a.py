@@ -8,20 +8,36 @@
 
 chambers = [['C', 'D'], ['D', 'C'], ['A', 'A'], ['B', 'B']]
 
-#############
-#...........#
-###B#C#B#D###
-  #A#D#C#A#
-  #########
-
-chambers = [['A', 'B'], ['D', 'C'], ['C', 'B'], ['A', 'D']]
+##############
+##...........#
+####B#C#B#D###
+#  #A#D#C#A#
+#  #########
+#
+#chambers = [['A', 'B'], ['D', 'C'], ['C', 'B'], ['A', 'D']]
 
 want_chambers = [['A', 'A'], ['B', 'B'], ['C', 'C'], ['D', 'D']]
 hallway = ['.' for x in range(11)]
 hallway_places = [0, 1, 3, 5, 7, 9, 10]
 
-print(hallway)
-print(chambers)
+def dump(hallway, chambers, cost, best_cost):
+    print("#"+''.join(hallway)+"#")
+    print("###", end='')
+    for ch in range(len(chambers)):
+        if len(chambers[ch]) == 2:
+            print(chambers[ch][1], end='#')
+        else:
+            print(".", end='#')
+    print("##", cost, best_cost)
+    print("  #", end='')
+    for ch in range(len(chambers)):
+        if len(chambers[ch]) >= 1:
+            print(chambers[ch][0], end='#')
+        else:
+            print(".", end='#')
+    print("")
+
+dump(hallway, chambers, 0, 0)
 
 def is_free(hallway, a, b):
     l, r = min(a,b), max(a,b)
@@ -44,6 +60,7 @@ def reachable_hallway(hallway, ch):
     return ha
 
 def reachable_chamber(hallway, n, ch):
+    assert(0 <= ch <= 3)
     ch_exit = chamber_exit(ch)
     return is_free(hallway, n, ch_exit)
 
@@ -65,16 +82,24 @@ def amphipod_cost(a):
         assert(0)
 
 best_cost = 100000
+visited = {}
 def walk(hallway, chambers, cost, level):
+    global visited
+    serial = ''.join(hallway) + '|' + '|'.join([''.join(x) for x in chambers])
+    if serial in visited and visited[serial] <= cost:
+        return
+    visited[serial] = cost
+
     if chambers == want_chambers:
         global best_cost
         if cost < best_cost:
-            best_cost = cost
             print("Found solution with cost", cost, "best so far:", best_cost)
+            best_cost = cost
         return
 
-    if level <= 3:
+    if level <= 4:
         print("    "*level + "Looking at", hallway, chambers, cost, best_cost)
+        dump(hallway, chambers, cost, best_cost)
     # move one amphipod from the chambers to the hallway
     for ch in range(len(chambers)):
         if len(chambers[ch]) > 0:
@@ -85,7 +110,7 @@ def walk(hallway, chambers, cost, level):
 
                 amphipod = new_chambers[ch].pop()
                 amphipod_n = ord(amphipod) - 65
-                if amphipod_n == ch and not (len(new_chambers[ch]) == 1 and new_chambers[ch][0] != ch):
+                if amphipod_n == ch and not (len(new_chambers[ch]) == 1 and new_chambers[ch][0] != amphipod):
                     break # don't move out of target chamber unless blocking something
                 new_hallway[ha] = amphipod
                 new_cost = hallway_cost(ha, ch)
@@ -109,8 +134,8 @@ def walk(hallway, chambers, cost, level):
                new_chambers = [[x for x in ch] for ch in chambers]
                new_hallway[ha] = '.'
                new_chambers[amphipod_n].append(amphipod)
-               new_cost = hallway_cost(ha, ch)
-               if len(new_chambers[ch]) == 1:
+               new_cost = hallway_cost(ha, amphipod_n)
+               if len(new_chambers[amphipod_n]) == 1:
                    new_cost += 1
                new_cost *= amphipod_cost(amphipod)
                #print("    "*level + "Amphipod", amphipod, "can move to chamber", amphipod_n, "at cost", new_cost)
