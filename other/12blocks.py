@@ -5,9 +5,9 @@ from time import sleep
 
 blocks = []
 
-size_x, size_y = 6, 10
-#size_x, size_y = 5, 12
-#size_x, size_y = 4, 15
+size_x, size_y = 6, 10 # 9356 solutions (with 291131199 steps)
+#size_x, size_y = 5, 12 # 4040 solutions
+#size_x, size_y = 4, 15 # 1472 solutions
 
 with open('12blocks.txt') as f:
     block = []
@@ -25,7 +25,7 @@ def dump(grid):
     for line in grid:
         for x in line:
             b = 40 + x // 2
-            f = 31 + (x % 8)
+            f = 37 - (x % 7)
             print(f"\033[{f};{b}m{x:2d}", end=' ')
         print('\033[0m')
 
