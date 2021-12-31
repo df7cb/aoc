@@ -12,91 +12,64 @@ with open('20.txt') as f:
 
 print(regexp)
 
-def make_graph(regexp):
-    head = 0
-    heads = [0]
-    branches = [0]
-    graph = { 0: (None, []) } # { id: ('NSEW', [id0, ...]), ... }
-    id = 1
-
-    #print(' ', head, heads, branches, graph)
-
-    for c in regexp:
-        if c in 'NSEW':
-            graph[id] = (c, [])
-            if head is not None:
-                graph[head][1].append(id)
-            head = id
-            heads[-1] = head
-            id += 1
-        elif c == '(':
-            graph[id] = (None, [])
-            branches.append(id)
-            graph[head][1].append(id)
-            head = id
-            heads[-1] = head
-            id += 1
-        elif c == '|':
-            head = branches[-1]
-            heads.append(head)
-        elif c == ')':
-            graph[id] = (None, [])
-            for n in heads:
-                graph[n][1].append(id)
-            head = id
-            heads = [head]
-            branches.pop()
-            id += 1
-
-        #print(c, "head", head, "heads", heads, "branches", branches, graph)
-
-    # closing
-    graph[id] = (None, [])
-    for n in heads:
-        graph[n][1].append(id)
-    head = id
-    heads = [head]
-
-    #print(c, "head", head, "heads", heads, "branches", branches, graph)
-
-    return graph
-
-graph = make_graph(regexp)
-
-print("Graph nodes:", len(graph))
+# xx ( yy | yy ) zz
+#         ^ new branch = new head at last branch level
+#    ^ new branch level = remember heads for next branch
 
 doors = defaultdict(set)
-x, y = 0, 0
-visited = set()
 
-def walk(graph, id, x, y):
-    if (id, x, y) in visited:
-        return
-    visited.add((id, x, y))
+def parse(regexp, pos, heads, level):
+    print("   "*level, "parse", pos, len(heads))
+    my_heads = [[[h for h in x] for x in heads]]
+    while pos < len(regexp):
+        c = regexp[pos]
+        pos += 1
 
-    node = graph[id]
-    if node[0] is not None:
-        if node[0] == 'N':
-            doors[x,y].add((x,y-1))
-            doors[x,y-1].add((x,y))
-            y -= 1
-        elif node[0] == 'S':
-            doors[x,y].add((x,y+1))
-            doors[x,y+1].add((x,y))
-            y += 1
-        elif node[0] == 'W':
-            doors[x,y].add((x-1,y))
-            doors[x-1,y].add((x,y))
-            x -= 1
-        elif node[0] == 'E':
-            doors[x,y].add((x+1,y))
-            doors[x+1,y].add((x,y))
-            x += 1
+        if c in 'NSEW':
+            if c == 'N':
+                for h in my_heads[-1]:
+                    doors[h[0],h[1]].add((h[0],h[1]+1))
+                    doors[h[0],h[1]+1].add((h[0],h[1]))
+                    h[1] += 1
+            elif c == 'S':
+                for h in my_heads[-1]:
+                    doors[h[0],h[1]].add((h[0],h[1]-1))
+                    doors[h[0],h[1]-1].add((h[0],h[1]))
+                    h[1] -= 1
+            elif c == 'E':
+                for h in my_heads[-1]:
+                    doors[h[0],h[1]].add((h[0]+1,h[1]))
+                    doors[h[0]+1,h[1]].add((h[0],h[1]))
+                    h[0] += 1
+            elif c == 'W':
+                for h in my_heads[-1]:
+                    doors[h[0],h[1]].add((h[0]-1,h[1]))
+                    doors[h[0]-1,h[1]].add((h[0],h[1]))
+                    h[0] -= 1
+            print("   "*level, "moved", regexp[pos-1], pos, len(my_heads))
 
-    for n in node[1]:
-        walk(graph, n, x, y)
+        elif c == '(':
+            print("   "*level, "entering", pos, len(my_heads))
+            pos, ret = parse(regexp, pos, my_heads[-1], level+1)
+            my_heads[-1] = ret
+            print("   "*level, "returned", pos, len(my_heads))
 
-walk(graph, 0, 0, 0)
+        elif c == '|':
+            my_heads.append([x for x in heads])
+            print("   "*level, "split", pos, len(my_heads))
+
+        elif c == ')':
+            break
+
+    ret = set()
+    for hs in my_heads:
+        for h in hs:
+            ret.add((h[0], h[1]))
+
+    print("   "*level, "returning", pos, len(ret))
+    return pos, [ [h[0], h[1]] for h in ret ]
+
+print(parse(regexp, 0, [[0,0]], 0))
 
 print("Doors:", doors)
 
@@ -109,7 +82,7 @@ def dijkstra(doors):
         c, x, y = heapq.heappop(queue)
         cost_here = cost[x, y]
         for node in doors[x, y]:
-            if node not in cost or cost[node] > cost_here + 1:
+            if node not in cost or cost_here + 1 < cost[node]:
                 cost[node] = cost_here + 1
                 heapq.heappush(queue, (cost_here + 1, node[0], node[1]))
 
