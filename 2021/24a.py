@@ -59,6 +59,12 @@ def run_dummy(reg, c, a, b):
     reg['z'] = (z//c) * (25 * (z%26+a!=w) + 1) + (w+b) * (z%26+a!=w)
     return reg
 
+def run_dummy2(i, reg):
+    c = int(program[i][3][2])
+    a = int(program[i][4][2])
+    b = int(program[i][14][2])
+    return run_dummy(reg, c, a, b)
+
 def chew(monad):
     reg = { 'w': 0, 'x': 0, 'y': 0, 'z': 0 }
     for x in range(len(monad)):
@@ -67,13 +73,40 @@ def chew(monad):
     #if reg['z'] > 10000: return
     print(x, monad[x], reg)
 
+cache = set()
+
+def try_number(i, monad, zo):
+    if (i, zo) in cache:
+        return
+    cache.add((i, zo))
+    if i < 0: exit(0)
+    for w in range(9, 0, -1):
+        for zi in range(zo+30):
+            #if zi%500000==0: print(i, zo, zi)
+            reg = { 'w': w, 'x': 0, 'y': 0, 'z': zi }
+            #reg = prg_sub(program[i], reg)
+            reg = run_dummy2(i, reg)
+            if reg['z'] == zo:
+                print("Found solution", i, str(w)+monad, zi, '->', zo)
+                try_number(i-1, str(w)+monad, zi)
+        for zi in range(25*(zo+1)-100, 26*(zo+1)):
+            if zi%500000==0: print(i, w, zo, zi)
+            reg = { 'w': w, 'x': 0, 'y': 0, 'z': zi }
+            #reg = prg_sub(program[i], reg)
+            reg = run_dummy2(i, reg)
+            if reg['z'] == zo:
+                print("Found solution", i, str(w)+monad, zi, '->', zo)
+                try_number(i-1, str(w)+monad, zi)
+
+try_number(13, '', 0)
+
 #for i in range(10000):
 #    ii = [int(x) for x in f"{i:04}"]
 #    if 0 in ii: continue
 #    print("Trying", ii)
 #    chew(ii)
 
-chew([int(x) for x in '13579246899999'])
+#chew([int(x) for x in '13579246899999'])
 
 #for w in range(10):
 #    print("Real run: ", prg_sub(program[0], { 'w': w, 'x': 0, 'y': 0, 'z': 0 }))
