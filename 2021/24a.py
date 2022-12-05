@@ -14,6 +14,9 @@ with open('24.txt') as f:
         else:
             program[-1].append(fields)
 
+for prg in program:
+    print(prg[3][2], prg[4][2], prg[14][2])
+
 reg = { 'w': 0, 'x': 0, 'y': 0, 'z': 0 }
 
 monad = [1 for x in range(14)]
