@@ -19,7 +19,7 @@ def print_rock(rock):
     for line in rock:
         print(''.join(line))
 
-print(max_x, max_y)
+#print(max_x, max_y)
 rock = [['.' for i in range(max_x*2)] for j in range(max_y+2)]
 rock.append(['#' for i in range(max_x*2)])
 
@@ -36,15 +36,19 @@ for s in structure:
         else:
             raise Exception('structure is weird')
 
-print_rock(rock)
+#print_rock(rock)
 
+trail = [(start_x, start_y)]
 def drop_sand(rock):
-    x, y = start_x, start_y
+    if trail:
+        x, y = trail[-1]
+    else:
+        x, y = start_x, start_y
     if rock[y][x] == 'o':
         return False
     while True:
         if y == len(rock)-1:
-            print('The End')
+            #print('The End')
             return False
         if rock[y+1][x] == '.':
             y += 1
@@ -56,12 +60,14 @@ def drop_sand(rock):
             x += 1
         else:
             rock[y][x] = 'o'
+            trail.pop()
             return True
+        trail.append((x, y))
 
 drops = 0
 while drop_sand(rock):
     drops += 1
-    print(drops)
+    #print(drops)
 
-print_rock(rock)
+#print_rock(rock)
 print(drops)

@@ -19,14 +19,13 @@ def print_rock(rock):
     for line in rock:
         print(''.join(line))
 
-print(max_x, max_y)
+#print(max_x, max_y)
 rock = [['.' for i in range(max_x+2)] for j in range(max_y+1)]
 
 for s in structure:
     for i in range(len(s)-1):
         x0, y0 = s[i]
         x1, y1 = s[i+1]
-        print(x0, y0, x1, y1)
         if (x0 == x1):
             for y in range(min(y0, y1), max(y0, y1)+1):
                 rock[y][x0] = '#'
@@ -36,13 +35,12 @@ for s in structure:
         else:
             raise Exception('structure is weird')
 
-print_rock(rock)
+#print_rock(rock)
 
 def drop_sand(rock):
     x, y = start_x, start_y
     while True:
         if y == len(rock)-1:
-            print('The End')
             return False
         if rock[y+1][x] == '.':
             y += 1
@@ -58,7 +56,7 @@ def drop_sand(rock):
 
 drops = 0
 while drop_sand(rock):
-    print_rock(rock)
+    #print_rock(rock)
     drops += 1
 
 print(drops)
