@@ -27,7 +27,6 @@ for s in structure:
     for i in range(len(s)-1):
         x0, y0 = s[i]
         x1, y1 = s[i+1]
-        print(x0, y0, x1, y1)
         if (x0 == x1):
             for y in range(min(y0, y1), max(y0, y1)+1):
                 rock[y][x0] = '#'
@@ -41,6 +40,8 @@ print_rock(rock)
 
 def drop_sand(rock):
     x, y = start_x, start_y
+    if rock[y][x] == 'o':
+        return False
     while True:
         if y == len(rock)-1:
             print('The End')
@@ -60,7 +61,7 @@ def drop_sand(rock):
 drops = 0
 while drop_sand(rock):
     drops += 1
-    print_rock(rock)
     print(drops)
 
+print_rock(rock)
 print(drops)
