@@ -22,7 +22,8 @@ status = {'minute': 0,
           'ore_robot': 1, 'ore': 0,
           'clay_robot': 0, 'clay': 0,
           'obsidian_robot': 0, 'obsidian': 0,
-          'geode_robot': 0, 'geode': 0}
+          'geode_robot': 0, 'geode': 0,
+          'next': None}
 
 print(status)
 
@@ -48,38 +49,54 @@ while queue:
         print(status)
         continue
 
-    wait = False
-    if status['ore'] >= blueprint['ore_ore']:
+    if status['next'] == None:
+        status2 = build(deepcopy(status))
+        status2['next'] = 'ore_robot'
+        if status2 not in queue: queue.append(status2)
+
+        status2 = build(deepcopy(status))
+        status2['next'] = 'clay_robot'
+        if status2 not in queue: queue.append(status2)
+
+        if status['clay_robot'] > 0:
+            status2 = build(deepcopy(status))
+            status2['next'] = 'obsidian_robot'
+            if status2 not in queue: queue.append(status2)
+
+        if status['obsidian_robot'] > 0:
+            status2 = build(deepcopy(status))
+            status2['next'] = 'geode_robot'
+            if status2 not in queue: queue.append(status2)
+
+    if status['next'] == 'ore_robot' and status['ore'] >= blueprint['ore_ore']:
         status2 = build(deepcopy(status))
         status2['ore'] -= blueprint['ore_ore']
         status2['ore_robot'] += 1
         if status2 not in queue: queue.append(status2)
-    else: wait = True
-    if status['ore'] >= blueprint['clay_ore']:
+
+    if status['next'] == 'clay_robot' and status['ore'] >= blueprint['clay_ore']:
         status2 = build(deepcopy(status))
         status2['ore'] -= blueprint['clay_ore']
         status2['clay_robot'] += 1
         if status2 not in queue: queue.append(status2)
-    else: wait = True
-    if status['ore'] >= blueprint['obsidian_ore'] and status['clay'] >= blueprint['obsidian_clay']:
+
+    if status['next'] == 'obsidian_robot' and status['ore'] >= blueprint['obsidian_ore'] and status['clay'] >= blueprint['obsidian_clay']:
         status2 = build(deepcopy(status))
         status2['ore'] -= blueprint['obsidian_ore']
         status2['clay'] -= blueprint['obsidian_clay']
         status2['obsidian_robot'] += 1
         if status2 not in queue: queue.append(status2)
         print(status2)
-    else: wait = True
-    if status['ore'] >= blueprint['geode_ore'] and status['obsidian'] >= blueprint['geode_obsidian']:
+
+    if status['next'] == 'geode_robot' and status['ore'] >= blueprint['geode_ore'] and status['obsidian'] >= blueprint['geode_obsidian']:
         status2 = build(deepcopy(status))
         status2['ore'] -= blueprint['geode_ore']
         status2['obsidian'] -= blueprint['geode_obsidian']
         status2['geode_robot'] += 1
         if status2 not in queue: queue.append(status2)
         print(status2)
-    else: wait = True
 
-    if wait:
-        status2 = build(deepcopy(status))
-        if status2 not in queue:
-            queue.append(status2)
+    status2 = build(deepcopy(status))
+    if status2 not in queue:
+        queue.append(status2)
 
