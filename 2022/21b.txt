@@ -1,0 +1,43 @@
+#!/usr/bin/python3
+
+import re
+
+monkeys = {}
+
+with open("21.txt") as f:
+    for line in f:
+        m = re.match('(.*): (.*)', line)
+        monkeys[m.group(1)] = m.group(2)
+
+def monkey(key, humn):
+    val = monkeys[key]
+    if key == 'humn':
+        return humn
+    elif '+' in val:
+        a, _, b = val.partition(' + ')
+        return monkey(a, humn) + monkey(b, humn)
+    elif '-' in val:
+        a, _, b = val.partition(' - ')
+        return monkey(a, humn) - monkey(b, humn)
+    elif '*' in val:
+        a, _, b = val.partition(' * ')
+        return monkey(a, humn) * monkey(b, humn)
+    elif '/' in val:
+        a, _, b = val.partition(' / ')
+        return int(monkey(a, humn) / monkey(b, humn))
+    else:
+        return int(val)
+
+low, high = 0, 10000000000000
+while True:
+    humn = int((high + low) / 2)
+    a, _, b = monkeys['root'].partition(' + ')
+    a = monkey(a, humn)
+    b = monkey(b, humn)
+    print(humn, a, b)
+    if a == b:
+        exit()
+    elif a > b:
+        low, high = humn, high
+    else:
+        low, high = low, humn
