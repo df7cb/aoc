@@ -15,6 +15,8 @@ with open("19.txt") as f:
                            'obsidian_clay': int(m.group(5)),
                            'geode_ore': int(m.group(6)),
                            'geode_obsidian': int(m.group(7))})
+        if len(blueprints) > 3:
+            break
 
 print(blueprints)
 
@@ -27,7 +29,8 @@ def build(status):
     return status
 
 def enqueue(seen, queue, status):
-    ser = f"{status['minute']} {status['ore_robot']} {status['ore']} {status['clay_robot']} {status['clay']} {status['obsidian_robot']} {status['obsidian']} {status['geode_robot']} {status['geode']} {status['next']}"
+    #ser = f"{status['minute']} {status['ore_robot']} {status['ore']} {status['clay_robot']} {status['clay']} {status['obsidian_robot']} {status['obsidian']} {status['geode_robot']} {status['geode']} {status['next']}"
+    ser = f"{status['ore_robot']} {status['ore']} {status['clay_robot']} {status['clay']} {status['obsidian_robot']} {status['obsidian']} {status['geode_robot']} {status['geode']} {status['next']}"
     if not ser in seen:
         queue.append(status)
         seen.add(ser)
@@ -43,15 +46,16 @@ def run(i, blueprint):
     queue = deque([status])
     best_geodes = 0
 
+    j = 0
     while queue:
         status = queue.popleft()
-        if status['geode'] > 7:
+        j += 1
+        if j % 1000000 == 0 or status['geode'] > 8:
             print(status)
             print(i, len(seen), len(queue))
-        if status['minute'] == 24:
+        if status['minute'] == 32:
             #print(status)
             best_geodes = max(best_geodes, status['geode'])
-        #if status['minute'] == 26:
             continue
 
         if status['next'] == None:
@@ -110,10 +114,10 @@ def run(i, blueprint):
     print("Best geodes", best_geodes, "blueprint", blueprint)
     return best_geodes
 
-s = 0
+s = 1
 for i in range(1, len(blueprints)):
     print(i)
     r = run(i, blueprints[i])
-    s += i * r
-    print("Quality level", i*r, s)
-print("Sum of quality levels", s)
+    s *= r
+    print("Quality level", r)
+print("Product of quality levels", s)
