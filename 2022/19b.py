@@ -21,26 +21,26 @@ with open("19.txt") as f:
 print(blueprints)
 
 def build(status):
-    status['minute'] += 1
-    status['ore'] += status['ore_robot']
-    status['clay'] += status['clay_robot']
-    status['obsidian'] += status['obsidian_robot']
-    status['geode'] += status['geode_robot']
+    status['m'] += 1
+    status['o'] += status['or']
+    status['c'] += status['cr']
+    status['O'] += status['Or']
+    status['g'] += status['gr']
     return status
 
 def enqueue(seen, queue, status):
-    #ser = f"{status['minute']} {status['ore_robot']} {status['ore']} {status['clay_robot']} {status['clay']} {status['obsidian_robot']} {status['obsidian']} {status['geode_robot']} {status['geode']} {status['next']}"
-    ser = f"{status['ore_robot']} {status['ore']} {status['clay_robot']} {status['clay']} {status['obsidian_robot']} {status['obsidian']} {status['geode_robot']} {status['geode']} {status['next']}"
+    #ser = f"{status['m']} {status['or']} {status['o']} {status['cr']} {status['c']} {status['Or']} {status['O']} {status['gr']} {status['g']} {status['next']}"
+    ser = f"{status['or']} {status['o']} {status['cr']} {status['c']} {status['Or']} {status['O']} {status['gr']} {status['g']} {status['next']}"
     if not ser in seen:
         queue.append(status)
         seen.add(ser)
 
 def run(i, blueprint):
-    status = {'minute': 0,
-              'ore_robot': 1, 'ore': 0,
-              'clay_robot': 0, 'clay': 0,
-              'obsidian_robot': 0, 'obsidian': 0,
-              'geode_robot': 0, 'geode': 0,
+    status = {'m': 0,
+              'or': 1, 'o': 0,
+              'cr': 0, 'c': 0,
+              'Or': 0, 'O': 0,
+              'gr': 0, 'g': 0,
               'next': None}
     seen = set()
     queue = deque([status])
@@ -50,60 +50,60 @@ def run(i, blueprint):
     while queue:
         status = queue.popleft()
         j += 1
-        if j % 1000000 == 0 or status['geode'] > 8:
+        if j % 1000000 == 0 or status['g'] > 8:
             print(status)
             print(i, len(seen), len(queue))
-        if status['minute'] == 32:
+        if status['m'] == 32:
             #print(status)
-            best_geodes = max(best_geodes, status['geode'])
+            best_geodes = max(best_geodes, status['g'])
             continue
 
         if status['next'] == None:
             status2 = copy(status)
-            status2['next'] = 'ore_robot'
+            status2['next'] = 'or'
             enqueue(seen, queue, status2)
 
             status2 = copy(status)
-            status2['next'] = 'clay_robot'
+            status2['next'] = 'cr'
             enqueue(seen, queue, status2)
 
-            if status['clay_robot'] > 0:
+            if status['cr'] > 0:
                 status2 = copy(status)
-                status2['next'] = 'obsidian_robot'
+                status2['next'] = 'Or'
                 enqueue(seen, queue, status2)
 
-            if status['obsidian_robot'] > 0:
+            if status['Or'] > 0:
                 status2 = copy(status)
-                status2['next'] = 'geode_robot'
+                status2['next'] = 'gr'
                 enqueue(seen, queue, status2)
 
-        elif status['next'] == 'ore_robot' and status['ore'] >= blueprint['ore_ore']:
+        elif status['next'] == 'or' and status['o'] >= blueprint['ore_ore']:
             status2 = build(copy(status))
-            status2['ore'] -= blueprint['ore_ore']
-            status2['ore_robot'] += 1
+            status2['o'] -= blueprint['ore_ore']
+            status2['or'] += 1
             status2['next'] = None
             enqueue(seen, queue, status2)
 
-        elif status['next'] == 'clay_robot' and status['ore'] >= blueprint['clay_ore']:
+        elif status['next'] == 'cr' and status['o'] >= blueprint['clay_ore']:
             status2 = build(copy(status))
-            status2['ore'] -= blueprint['clay_ore']
-            status2['clay_robot'] += 1
+            status2['o'] -= blueprint['clay_ore']
+            status2['cr'] += 1
             status2['next'] = None
             enqueue(seen, queue, status2)
 
-        elif status['next'] == 'obsidian_robot' and status['ore'] >= blueprint['obsidian_ore'] and status['clay'] >= blueprint['obsidian_clay']:
+        elif status['next'] == 'Or' and status['o'] >= blueprint['obsidian_ore'] and status['c'] >= blueprint['obsidian_clay']:
             status2 = build(copy(status))
-            status2['ore'] -= blueprint['obsidian_ore']
-            status2['clay'] -= blueprint['obsidian_clay']
-            status2['obsidian_robot'] += 1
+            status2['o'] -= blueprint['obsidian_ore']
+            status2['c'] -= blueprint['obsidian_clay']
+            status2['Or'] += 1
             status2['next'] = None
             enqueue(seen, queue, status2)
 
-        elif status['next'] == 'geode_robot' and status['ore'] >= blueprint['geode_ore'] and status['obsidian'] >= blueprint['geode_obsidian']:
+        elif status['next'] == 'gr' and status['o'] >= blueprint['geode_ore'] and status['O'] >= blueprint['geode_obsidian']:
             status2 = build(copy(status))
-            status2['ore'] -= blueprint['geode_ore']
-            status2['obsidian'] -= blueprint['geode_obsidian']
-            status2['geode_robot'] += 1
+            status2['o'] -= blueprint['geode_ore']
+            status2['O'] -= blueprint['geode_obsidian']
+            status2['gr'] += 1
             status2['next'] = None
             enqueue(seen, queue, status2)
 
