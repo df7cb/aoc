@@ -33,11 +33,7 @@ def wildcard(hand):
 
     i = hand.index('J')
     for c in "AKQT98765432j":
-        hand2 = [x for x in hand]
-        hand2[i] = c
-        hand2 = ''.join(hand2)
-        for hand3 in wildcard(hand2):
-            yield hand3
+        yield hand.replace('J', c)
     return
 
 def best_shape(hand):
