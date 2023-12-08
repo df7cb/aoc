@@ -15,13 +15,13 @@ with open("08.txt") as f:
         if m.group(1)[-1] == 'A':
             where.append(m.group(1))
 
-#print(dirs)
-#print(instr)
-
 count = 0
+
+finish = [0 for x in where]
 
 while True:
     for d in dirs:
+        count += 1
         finished = True
         for w in range(len(where)):
             if d == 'L':
@@ -30,12 +30,18 @@ while True:
                 where[w] = instr[where[w]][1]
             if where[w][-1] != 'Z':
                 finished = False
-        count += 1
+            else:
+                print("finish", w, count - finish[w], count)
+                finish[w] = count
 
         if finished:
             print(count, where)
             exit()
 
+    for w in range(len(where)):
+        if where[w][-1] == 'Z':
+            print(w, "finished at end", count)
     #if count % 10000 == 0:
-    print(count, where)
+    #    print(count, where)
 
+#... manually solved after reading the output :)
