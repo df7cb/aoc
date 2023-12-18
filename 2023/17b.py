@@ -27,7 +27,8 @@ def enqueue(queue, seen, key, dist):
     else:
         queue[key] = dist
 
-enqueue(queue, seen, (0, 0, '   '), 0)
+enqueue(queue, seen, (0, 0, '>'), 0)
+enqueue(queue, seen, (0, 0, 'v'), 0)
 
 count=0
 while queue:
@@ -39,14 +40,18 @@ while queue:
     if count%100000 == 0:
         print(len(queue), y, x, dist, tail)
 
-    if x > 0 and tail != '<<<' and tail[-1] != '>':
-        enqueue(queue, seen, (y, x-1, tail[1:] + '<'), dist+int(city[y][x-1]))
-    if x < len(city[0]) - 1 and tail != '>>>' and tail[-1] != '<':
-        enqueue(queue, seen, (y, x+1, tail[1:] + '>'), dist+int(city[y][x+1]))
-    if y > 0 and tail != '^^^' and tail[-1] != 'v':
-        enqueue(queue, seen, (y-1, x, tail[1:] + '^'), dist+int(city[y-1][x]))
-    if y < len(city) - 1 and tail != 'vvv' and tail[-1] != '^':
-        enqueue(queue, seen, (y+1, x, tail[1:] + 'v'), dist+int(city[y+1][x]))
+    if tail[-1] in ('v', '^'):
+        for n in range(4, 11):
+            if x-n >= 0:
+                enqueue(queue, seen, (y, x-n, '<'), dist+sum(int(city[y][x-i]) for i in range(1, n+1)))
+            if x+n < len(city[0]):
+                enqueue(queue, seen, (y, x+n, '<'), dist+sum(int(city[y][x+i]) for i in range(1, n+1)))
+    if tail[-1] in ('<', '>'):
+        for n in range(4, 11):
+            if y-n >= 0:
+                enqueue(queue, seen, (y-n, x, '^'), dist+sum(int(city[y-i][x]) for i in range(1, n+1)))
+            if y+n < len(city):
+                enqueue(queue, seen, (y+n, x, '^'), dist+sum(int(city[y+i][x]) for i in range(1, n+1)))
 
 ex = seen[(len(city)-1, len(city[0])-1)]
 print(ex)
