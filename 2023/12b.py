@@ -1,32 +1,30 @@
 #!/usr/bin/python3
 
-def consistent(springs, head):
-    if len(head) > len(springs):
-        return False
-    for i in range(len(head)):
-        if springs[i] == '?':
-            continue
-        if springs[i] != head[i]:
-            return False
-    return True
+from random import random
 
-def check(springs, head, counts):
-    if not consistent(springs, head):
-        return 0
+def check(springs, s, head, counts, c):
     #print(springs, head, counts)
 
     count = 0
-    lh = len(head)
-    ls = len(springs)
     lc = len(counts)
-    if lh < ls:
-        count += check(springs, head + '.', counts)
-    if lc > 0 and (lh == 0 or head[-1] == '.') and lh + sum(counts) + lc - 1 <= ls:
-        count += check(springs, head + '#' * counts[0], counts[1:])
-    if lc == 0 and ls == lh:
-        if count % 10000 == 1:
-            print(head, count)
+    ls = len(springs)
+    sc = sum(counts)
+    if s < ls and sc + lc <= ls:
+        if springs[s] in ('.', '?'):
+            count += check(springs, s+1, '.', counts, c)
+    if lc > 0 and head == '.' and s + sc + lc - 1 <= ls:
+        ok = True
+        for i in range(counts[0]):
+            if springs[s+i] == '.':
+                ok = False
+                break
+        if ok:
+            count += check(springs, s+counts[0], '#', counts[1:], c)
+    if lc == 0 and s == len(springs):
+        #print(springs, head, counts, "<----------", count)
         return count + 1
+    #if random() < 0.00001:
+    #    print(springs, head, counts, "<----------", count)
     return count
 
 arrangements = 0
@@ -38,7 +36,7 @@ with open("12.txt") as f:
         counts = [int(x) for x in counts.split(',')]
         counts = counts * 5
         print(springs, counts)
-        a = check(springs, '', counts)
+        a = check(springs, 0, '.', counts, 0)
         arrangements += a
         print(springs, counts, a, arrangements)
 
