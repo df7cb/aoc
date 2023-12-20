@@ -25,8 +25,9 @@ for m in [x for x in module]:
         module[out]['in'][m] = 0
 
 count = {0: 0, 1: 0}
+high = {'hn': 0, 'mp': 0, 'xf': 0, 'fz': 0}
 
-def push_button():
+def push_button(presses):
     signals = deque([('button', 0, 'broadcaster')])
 
     while signals:
@@ -38,6 +39,11 @@ def push_button():
         count[signal] += 1
         md = module[dest]
         #print(f"{source} -{'high' if signal else 'low'}-> {dest} {md}")
+
+        if source in ('hn', 'mp', 'xf', 'fz') and signal == 1:
+            print(source, 'is high', presses, presses - high[source], [s for s in high if high[s] == presses])
+            high[source] = presses
+
         if md['type'] == '':
             for out in md['out']:
                 signals.append((dest, signal, out))
@@ -56,9 +62,11 @@ def push_button():
     return True
 
 presses = 1
-while push_button():
+while push_button(presses):
     if presses % 10000 == 0:
         print(presses)
     presses += 1
 
 print(presses)
+
+# ... read the output and guess the result :D
