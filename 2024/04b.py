@@ -18,7 +18,7 @@ def check(y, x):
     return 1
 
 for y in range(1, len(grid)-1):
-    for x in range(len(grid[0])-1):
+    for x in range(1, len(grid[0])-1):
         count += check(y, x)
 
 print(count)
