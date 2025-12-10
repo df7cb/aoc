@@ -21,8 +21,6 @@ select st_buffer(format('POLYGON((%s %s, %s %s, %s %s, %s %s, %s %s))', a.x, a.y
 from day09 a, day09 b
 where (a.x, a.y) < (b.x, b.y);
 
-select max(st_area(tiles.geom)) from tiles, floor2 where st_contains(floor2.geom, tiles.geom);
-
 create table best_tile as
 select st_area(tiles.geom), tiles.geom from tiles, floor2 where st_contains(floor2.geom, tiles.geom) order by 1 desc limit 1;
 
